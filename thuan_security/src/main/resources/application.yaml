@@ -1,0 +1,113 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: thuan_security
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 842664999029-79hm5kc0vht0fivkdpkt76sfvpb8tpb0.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - profile
+              - email
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/google"
+            client-name: Google
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+            token-uri: https://oauth2.googleapis.com/token
+            user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+            user-name-attribute: sub
+
+      resourceserver:
+        jwt:
+          jwk-set-uris:
+            sso: http://localhost:8080/realms/vinhbui21/protocol/openid-connect/certs
+            internal: http://localhost:8081/api/certificate/.well-known/jwks.json
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: vinhhoc21@gmail.com
+    password: syff bddt tsru gavg
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
+
+keystore:
+  file: keystore.jks
+  password: 123456
+  alias: vinhkey1
+
+jwt:
+  expiration:
+    time: 9000000
+
+file:
+  upload-dir: uploads
+
+idp:
+  url: http://localhost:8080
+  token-endpoint: /realms/vinhbui21/protocol/openid-connect/token
+  register-endpoint: /admin/realms/vinhbui21/users
+  logout-endpoint: /realms/vinhbui21/protocol/openid-connect/logout
+  update-endpoint: /admin/realms/vinhbui21/users/{userId}
+  resetpass-endpoint: /admin/realms/vinhbui21/users/{userId}/reset-password
+  jwt-endpoint: http://localhost:8080/realms/vinhbui21
+  client-id: vinhbui21_app
+  client-secret: 43M4age3lOVg8HyfIsBt3JmsMtnkx6h6
+
+keycloak:
+  enabled: false
+
+  springdoc:
+    swagger-ui:
+      path: /swagger-ui.html
+    api-docs:
+      version: openapi_3_0
+#      group: services
+      package: com.example.thuan_security.controller
+      description: This is an official API document of IAM Service 2 service
+      title: IAM Service 2 API document
+      server: http://localhost:8081/
+
+logging:
+  file:
+    path: logs/
+    name: logs/application.log
+
+app:
+  iam:
+    internal-url: http://localhost:8082
+
+

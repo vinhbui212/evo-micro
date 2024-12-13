@@ -1,0 +1,41 @@
+server:
+  port: 8082
+spring:
+  application:
+    name: storage_service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/storage
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  hikari:
+    minimum-idle: 5
+    maximum-pool-size: 10
+    idle-timeout: 30000
+    max-lifetime: 600000
+    connection-timeout: 30000
+
+  servlet:
+    multipart:
+      enabled: true  # K�ch ho?t h? tr? multipart
+      max-file-size: 10MB  # Gi?i h?n k�ch th??c file upload (t�y ch?nh theo nhu c?u)
+      max-request-size: 10MB
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uris:
+            sso: http://localhost:8080/realms/vinhbui21/protocol/openid-connect/certs
+            internal: http://localhost:8081/api/certificate/.well-known/jwks.json
+
+  file:
+    upload-dir: uploads
