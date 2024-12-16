@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Builder
 public class UserAuthority {
-    private UUID userId;
+    private Long userId;
     private String email;
     private String password;
     private boolean enabled;

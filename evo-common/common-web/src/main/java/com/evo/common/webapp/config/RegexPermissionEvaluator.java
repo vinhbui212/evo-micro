@@ -3,6 +3,7 @@ package com.evo.common.webapp.config;
 import com.evo.common.UserAuthentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.PermissionEvaluator;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -14,9 +15,12 @@ import java.util.regex.Pattern;
 public class RegexPermissionEvaluator implements PermissionEvaluator {
     @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
-        String requiredPermission = permission.toString();
+
+
+        String requiredPermission = targetDomainObject.toString() + "." + permission.toString();
+        log.info(requiredPermission);
+
         if (!(authentication instanceof UserAuthentication userAuthentication)) {
-            // @TODO throw exception
             throw new RuntimeException("NOT_SUPPORTED_AUTHENTICATION");
         }
 
@@ -24,12 +28,14 @@ public class RegexPermissionEvaluator implements PermissionEvaluator {
             return true;
         }
 
+        log.info("Granted Permissions: {}", userAuthentication.getGrantedPermissions());
+
         return userAuthentication.getGrantedPermissions().stream()
                 .anyMatch(p -> Pattern.matches(p, requiredPermission));
     }
 
     @Override
     public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-        return hasPermission(authentication, null, permission);
+        return hasPermission(authentication, targetType, permission);
     }
 }

@@ -3,6 +3,7 @@ package org.example.thuan_security.service.user;
 import org.example.thuan_security.request.*;
 import org.example.thuan_security.response.*;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -40,4 +41,6 @@ public interface UserService {
 
     Page<UserResponse> searchUsers(UserSearchRequest request);
 
+    @Transactional
+    String getClientToken(DefaultClientTokenResponse request);
 }

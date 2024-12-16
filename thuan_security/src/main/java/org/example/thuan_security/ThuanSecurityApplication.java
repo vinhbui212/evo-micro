@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableFeignClients
 @EnableJpaAuditing
-
+//@ComponentScan(basePackages = {"com.evo.common.webapp","com.evo.common.client","com.evo.common"})
 public class ThuanSecurityApplication {
 
     public static void main(String[] args) {

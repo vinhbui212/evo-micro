@@ -23,7 +23,7 @@ public class Roles extends AuditableEntity implements GrantedAuthority {
     private Long id;
     @Column(name = "name",unique = true)
     private String name;
-
+    private boolean isRoot;
     @Override
     public String getAuthority() {
         return name;

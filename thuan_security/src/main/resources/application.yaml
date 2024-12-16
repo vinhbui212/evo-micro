@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: thuan_security
+    client-id: vinh
+    client-secret: 1234
 
   servlet:
     multipart:
@@ -88,7 +90,7 @@ idp:
   client-secret: 43M4age3lOVg8HyfIsBt3JmsMtnkx6h6
 
 keycloak:
-  enabled: false
+  enabled: true
 
   springdoc:
     swagger-ui:

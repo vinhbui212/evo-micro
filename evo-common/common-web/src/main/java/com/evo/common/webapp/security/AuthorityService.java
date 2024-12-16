@@ -11,4 +11,5 @@ public interface AuthorityService {
 
     UserAuthority getClientAuthority(UUID clientId);
 
+
 }
