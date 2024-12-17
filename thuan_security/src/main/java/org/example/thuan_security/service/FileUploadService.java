@@ -1,10 +1,10 @@
 package org.example.thuan_security.service;
 
 
+import com.evo.common.client.storage.StorageClient;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.thuan_security.controller.client.StorageClient;
 import org.example.thuan_security.model.Users;
 import org.example.thuan_security.repository.UserRepository;
 import org.example.thuan_security.response.StorageResponse;

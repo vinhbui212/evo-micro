@@ -30,8 +30,11 @@ public class JwkAuthenticationManagerResolver implements
 
     @Override
     public AuthenticationManager resolve(HttpServletRequest request) {
-        return this.authenticationManagers.computeIfAbsent(toIssuerId(request), this::fromIssuer);
+        String issuerId = toIssuerId(request);
+        System.out.println("Issuer ID: " + issuerId);  // Debug output
+        return this.authenticationManagers.computeIfAbsent(issuerId, this::fromIssuer);
     }
+
 
     private String toIssuerId(HttpServletRequest request) {
         String token = this.resolver.resolve(request);

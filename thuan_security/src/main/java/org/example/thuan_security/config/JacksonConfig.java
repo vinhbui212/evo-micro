@@ -1,5 +1,6 @@
 package org.example.thuan_security.config;
 
+import com.evo.common.webapp.config.jackson.CustomLocalDateSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.example.thuan_security.model.LogEnum.*;
 
@@ -54,7 +55,8 @@ public class AuthController {
     private UserRepository userRepository;
     @Autowired
     private ResetPasswordStrategy resetPasswordStrategy;
-    private final RegisterFactory registerFactory;
+    @Autowired
+    private  RegisterFactory registerFactory;
     @Autowired
     private BlackListService blackListService;
     @Autowired
@@ -91,6 +93,7 @@ public class AuthController {
         userService.isVerifiedAccount(email);
         return "verified";
     }
+
 
     @PostMapping("/sendMailForgotPassword")
     public ResponseEntity<ApiResponse> forgotPassword(@RequestParam String email) {
@@ -152,6 +155,11 @@ public class AuthController {
         return resetPasswordStrategy.resetPassword(id,resetPasswordRequest);
     }
 
+    @GetMapping("/blacklist")
+    public boolean isTokenBlacklisted(@RequestParam String token){
+        return blackListService.isTokenBlacklisted(token);
+    }
+
     public String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
@@ -170,6 +178,13 @@ public class AuthController {
         }
 
         return null;
+    }
+    @GetMapping("/iam/client-token/{clientId}/{clientSecret}")
+    public ResponseEntity<?> getClientToken(@PathVariable String clientId, @PathVariable String clientSecret) throws Exception {
+        return ResponseEntity.ok(userService.getClientToken(DefaultClientTokenResponse.builder()
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .build()));
     }
    
 

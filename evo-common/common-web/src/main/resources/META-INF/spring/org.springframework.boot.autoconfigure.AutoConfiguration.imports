@@ -7,3 +7,4 @@ com.evo.common.webapp.security.ForbiddenTokenFilter
 com.evo.common.webapp.security.CustomAuthenticationFilter
 com.evo.common.webapp.config.JwtProperties
 com.evo.common.webapp.security.impl.RemoteAuthorityServiceImpl
+com.evo.common.webapp.config.CommonConfig

@@ -35,8 +35,7 @@
 //    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 //    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 //    private final CustomPermissionEvaluator customPermissionEvaluator;
-//    //    private final Error500Filter error500Filter;
-////    private final RequestLoggingFilter requestLoggingFilter;
+//
 //    private final JwtProperties jwtProperties;
 //
 //

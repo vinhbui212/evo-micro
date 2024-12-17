@@ -3,7 +3,15 @@ server:
 spring:
   application:
     name: storage_service
-
+    client-id: vinh1
+    client-secret: 1234
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uris:
+            sso: http://localhost:8080/realms/vinhbui21/protocol/openid-connect/certs
+            internal: http://localhost:8081/api/certificate/.well-known/jwks.json
   datasource:
     url: jdbc:postgresql://localhost:5432/storage
     username: postgres
@@ -29,13 +37,7 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          jwk-set-uris:
-            sso: http://localhost:8080/realms/vinhbui21/protocol/openid-connect/certs
-            internal: http://localhost:8081/api/certificate/.well-known/jwks.json
 
   file:
     upload-dir: uploads
+

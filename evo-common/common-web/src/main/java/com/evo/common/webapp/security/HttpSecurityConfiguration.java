@@ -47,7 +47,7 @@ public class HttpSecurityConfiguration {
                                 .requestMatchers("/health").permitAll()
                                 .requestMatchers("/api/certificate/.well-known/jwks.json").permitAll()
                                 .requestMatchers("/api/public/**").permitAll()
-                                .requestMatchers("/api/authenticate/**").permitAll()
+                                .requestMatchers("/api/auth/**").permitAll()
                                 .requestMatchers("/api/**").authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2

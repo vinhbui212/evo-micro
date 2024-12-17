@@ -1,8 +1,8 @@
 package org.example.thuan_security.controller;
 
+import com.evo.common.client.storage.StorageClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.thuan_security.controller.client.StorageClient;
 import org.example.thuan_security.response.ApiResponse2;
 import org.example.thuan_security.response.StorageResponse;
 import org.example.thuan_security.service.FileUploadService;

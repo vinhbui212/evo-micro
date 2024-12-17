@@ -1,1 +1,3 @@
 com.evo.common.client.iam.IamClientFallback
+com.evo.common.config.FeignClientConfiguration
+com.evo.common.config.FeignClientInterceptor

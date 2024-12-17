@@ -7,8 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.thuan_security.config.security.JwtTokenProvider;
 import org.example.thuan_security.controller.FileUploadController;
 import org.example.thuan_security.model.Roles;
+import org.example.thuan_security.model.ServiceClient;
 import org.example.thuan_security.model.Users;
 import org.example.thuan_security.repository.RoleRepository;
+import org.example.thuan_security.repository.ServiceClientRepo;
 import org.example.thuan_security.repository.UserRepository;
 import org.example.thuan_security.repository.UserRepositoryCustom;
 import org.example.thuan_security.request.*;
@@ -23,12 +25,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -39,14 +39,13 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    @Autowired
-    private AuthenticationManager authenticationManager;
+
+//    private final AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
@@ -59,7 +58,8 @@ public class UserServiceImpl implements UserService {
     private UserRepositoryCustom userRepositoryCustom;
     @Value("${keycloak.enabled}")
     private boolean isKeycloakEnabled;
-
+    @Autowired
+    private ServiceClientRepo serviceClientRepo;
     private final Map<String, String> tokenStorage = new HashMap<>();
     private final Cache<String, String> otpCache = CacheBuilder.newBuilder()
             .expireAfterWrite(5, TimeUnit.MINUTES)
@@ -67,6 +67,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FileUploadController fileUploadController;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
@@ -84,12 +86,11 @@ public class UserServiceImpl implements UserService {
                 return new LoginResponse("403", "Account not enabled.", "", null, null);
             }
 
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword())
-            );
 
-            if (authentication.isAuthenticated()) {
-                String email = ((org.springframework.security.core.userdetails.User) authentication.getPrincipal()).getUsername();
+
+
+            if (user.getEmail().equals(loginRequest.getEmail()) && passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
+                String email = user.getEmail();
                 log.info("User {} logged in successfully. Sending OTP...", email);
 
 
@@ -416,6 +417,14 @@ public class UserServiceImpl implements UserService {
 
         // Tạo Page<UserResponse> từ List<UserResponse>
         return new PageImpl<>(userResponses, PageRequest.of(request.getPage(), request.getSize()), usersPage.getTotalElements());
+    }
+
+    @Transactional
+    @Override
+    public String getClientToken(DefaultClientTokenResponse request) {
+        ServiceClient serviceClient= serviceClientRepo.findByClientIdAndClientSecret(request.getClientId(), request.getClientSecret());
+
+        return jwtTokenProvider.generateClientToken(serviceClient.getClientId(), serviceClient.getClientHost());
     }
 
 

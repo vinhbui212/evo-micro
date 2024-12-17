@@ -23,7 +23,7 @@ public class PagingResponse<T> extends Response<List<T>> {
         page.setPageSize(pageSize);
         page.setTotal(total);
         this.data = data;
-        success();
+        success("Success", data);
     }
 
     public PagingResponse(PageDTO<T> pageInput) {
@@ -31,7 +31,7 @@ public class PagingResponse<T> extends Response<List<T>> {
         page.setPageIndex(pageInput.getPage().getPageIndex());
         page.setPageSize(pageInput.getPage().getPageSize());
         page.setTotal(pageInput.getPage().getTotal());
-        success();
+        success("Success", data);
     }
 
     public <U> PagingResponse(PageDTO<U> pageInput, Function<List<U>, List<T>> mapper) {

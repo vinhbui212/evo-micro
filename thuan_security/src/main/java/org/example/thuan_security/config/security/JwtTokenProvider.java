@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.KeyPair;
 
+import java.security.PrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -52,6 +53,17 @@ public class JwtTokenProvider {
             log.error("Error initializing KeyPair: {}", e.getMessage());
             throw new IllegalStateException("Unable to initialize KeyPair", e);
         }
+    }
+
+    public String generateClientToken(String client_id, String clientHost) {
+        PrivateKey privateKey = keyPair.getPrivate();
+        return Jwts.builder()
+                .claim("user_id",client_id)
+                .claim("client_id",client_id)
+                .claim("clientHost",clientHost)
+                .setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(privateKey, SignatureAlgorithm.RS256)
+                .compact();
     }
 
     private KeyPair keyPair(String keyStore, String keyStorePassword, String alias) {
