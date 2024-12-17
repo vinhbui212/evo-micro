@@ -69,7 +69,9 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
             UserAuthority optionalUserAuthority = enrichAuthority(token, claim).orElseThrow();
             grantedPermissions = optionalUserAuthority.getGrantedPermissions().stream().map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
             isRoot = optionalUserAuthority.getIsRoot();
+//            isRoot=true;
         }
+
 
         User principal = new User(username, "", grantedPermissions);//tim hieu tai sau username null khong dc chap nhan o day
         AbstractAuthenticationToken auth = new UserAuthentication(principal, token, grantedPermissions, isRoot, isClient);

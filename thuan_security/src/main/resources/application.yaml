@@ -110,6 +110,7 @@ logging:
 
 app:
   iam:
-    internal-url: http://localhost:8082
+    internal-url: http://localhost:8081
+    storage-url: http://localhost:8082
 
 

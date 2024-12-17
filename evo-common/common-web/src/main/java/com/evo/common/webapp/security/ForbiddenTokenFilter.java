@@ -30,6 +30,7 @@ public class ForbiddenTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest httpServletRequest, @NonNull HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         log.info("ForbiddenTokenFilter");
         // @TOO check token blacklist
+
         filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 

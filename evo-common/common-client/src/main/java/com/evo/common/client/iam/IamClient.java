@@ -7,6 +7,7 @@ import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.UUID;
 
@@ -24,4 +25,11 @@ public interface IamClient {
     @GetMapping("/api/users/{username}/authorities-by-username")
     @LoadBalanced
     Response<UserAuthority> getUserAuthority(@PathVariable String username);
+
+    @GetMapping("/api/auth/client-token/{clientId}/{clientSecret}")
+    @LoadBalanced
+    Response<String> getClientToken(@PathVariable String clientId, @PathVariable String clientSecret);
+
+    @GetMapping("api/auth/blacklist")
+    Response <Boolean> isTokenBlacklisted(@RequestParam String token);
 }

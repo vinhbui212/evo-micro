@@ -25,7 +25,7 @@ public class FeignClientInterceptor implements RequestInterceptor {
 
         String clientId = client_id;
         String clientSecret = client_secret;
-        String tokenUrl = "http://localhost:8081/iam/client-token/{clientId}/{clientSecret}";
+        String tokenUrl = "http://localhost:8081/api/auth/iam/client-token/{clientId}/{clientSecret}";
         RestTemplate restTemplate = new RestTemplate();
         try {
             // Call the auth service to get the token

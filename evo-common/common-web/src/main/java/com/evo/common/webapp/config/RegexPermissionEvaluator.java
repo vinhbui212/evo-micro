@@ -30,8 +30,8 @@ public class RegexPermissionEvaluator implements PermissionEvaluator {
 
         log.info("Granted Permissions: {}", userAuthentication.getGrantedPermissions());
 
-        return userAuthentication.getGrantedPermissions().stream()
-                .anyMatch(p -> Pattern.matches(p, requiredPermission));
+        return userAuthentication.getGrantedPermissions().contains(requiredPermission);
+
     }
 
     @Override

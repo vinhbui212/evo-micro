@@ -155,6 +155,11 @@ public class AuthController {
         return resetPasswordStrategy.resetPassword(id,resetPasswordRequest);
     }
 
+    @GetMapping("/blacklist")
+    public boolean isTokenBlacklisted(@RequestParam String token){
+        return blackListService.isTokenBlacklisted(token);
+    }
+
     public String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
