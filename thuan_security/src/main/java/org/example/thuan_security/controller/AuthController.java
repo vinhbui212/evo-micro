@@ -2,6 +2,7 @@ package org.example.thuan_security.controller;
 
 import com.evo.common.UserAuthority;
 import com.evo.common.dto.response.Response;
+import com.evo.common.webapp.config.RedisService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,8 @@ public class AuthController {
     private BlackListService blackListService;
     @Autowired
     private AuthorityServiceImpl authorityService;
+    @Autowired
+    private RedisService redisService;
     @PostMapping("/register")
     public UserKCLResponse register(@RequestBody RegisterRequest registerRequest) throws Exception {
         RegisterStrategy loginStrategy = registerFactory.getLoginStrategy();
@@ -113,7 +116,7 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<ApiResponse> logout(@RequestParam String token, HttpServletRequest request) throws Exception {
         String email = jwtTokenProvider.extractClaims(token);
-        blackList.addTokenToBlacklist(token);
+        redisService.save(token);
         refreshTokenService.deleteRefreshToken(email);
         String ipAddress = convertTov4(request.getRemoteAddr());
         LocalDateTime localDateTime = LocalDateTime.now();
