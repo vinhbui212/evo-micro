@@ -30,6 +30,8 @@ public interface IamClient {
     @LoadBalanced
     Response<String> getClientToken(@PathVariable String clientId, @PathVariable String clientSecret);
 
-    @GetMapping("api/auth/blacklist")
+    @GetMapping("/api/auth/blacklist")
     Response <Boolean> isTokenBlacklisted(@RequestParam String token);
+
+
 }
