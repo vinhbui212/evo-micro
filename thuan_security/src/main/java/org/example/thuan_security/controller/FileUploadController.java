@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.thuan_security.response.ApiResponse2;
 import org.example.thuan_security.response.StorageResponse;
 import org.example.thuan_security.service.FileUploadService;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -89,6 +91,12 @@ public class FileUploadController {
                     .status(HttpStatus.BAD_REQUEST.value())
                     .build());
         }
+    }
+
+    @GetMapping("/getFileStorage/{fileId}")
+    public ResponseEntity<Resource> getFile(@PathVariable Long fileId) throws IOException {
+
+        return storageClient.getFile(fileId);
     }
 
 }

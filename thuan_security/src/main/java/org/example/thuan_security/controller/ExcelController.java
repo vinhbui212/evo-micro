@@ -1,12 +1,17 @@
 package org.example.thuan_security.controller;
 
+import com.evo.common.client.storage.StorageClient;
 import org.example.thuan_security.model.Users;
+import org.example.thuan_security.repository.UserRepository;
+import org.example.thuan_security.service.HistoryService;
 import org.example.thuan_security.service.excel.ExcelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +24,12 @@ public class ExcelController {
 
     @Autowired
     private ExcelService userService;
+    @Autowired
+    private StorageClient storageClient;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private HistoryService historyService;
 
     // API để export người dùng ra file Excel với filter
     @GetMapping("/exportUsers")
@@ -32,6 +43,7 @@ public class ExcelController {
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=users.xlsx");
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        historyService.createNewHistory("users.xlsx","EXPORT");
 
         // Trả về file Excel dưới dạng byte array
         return new ResponseEntity<>(excelData, headers, HttpStatus.OK);
@@ -41,9 +53,18 @@ public class ExcelController {
     public ResponseEntity<?> importUsers(@RequestParam("file") MultipartFile file) {
         try {
             List<String> errorMessages = userService.importUsersFromExcel(file);
+            if(errorMessages.size() > 0) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
+            }
+
             if (!errorMessages.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessages);
             }
+            Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+            String name=authentication.getName();
+            Users users=userRepository.findByEmail(name);
+            storageClient.uploadToStorageSingle(file,true,"1",users.getId());
+            historyService.createNewHistory(file.getOriginalFilename(),"IMPORT");
             return ResponseEntity.ok("Import dữ liệu thành công.");
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Có lỗi xảy ra khi xử lý file.");
