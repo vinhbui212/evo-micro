@@ -1,6 +1,8 @@
 package com.evo.common.webapp.config;
 
+import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.DependsOn;
@@ -23,6 +25,8 @@ public class RedisService {
 
     public void save(String token) {
         this.hashOperations.put(HASH_KEY, token, "BLACKLISTED");
+        Date expiryDate = new Date(System.currentTimeMillis() + TimeUnit.HOURS.toMillis(1));
+        redisTemplate.expireAt(HASH_KEY, expiryDate);
         log.info("Token [{}] đã được lưu vào Redis blacklist với HASH_KEY = {}", token, HASH_KEY);
 
     }

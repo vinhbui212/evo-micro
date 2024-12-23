@@ -16,6 +16,6 @@ public class PermissionRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String roleId;
-    private String permissionId;
+    private Long  roleId;
+    private Long permissionId;
 }

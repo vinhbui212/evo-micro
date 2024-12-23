@@ -8,7 +8,7 @@ import java.util.Set;
 
 
 public interface PermissionRoleRepository extends JpaRepository<PermissionRole, Long> {
-     boolean existsByRoleIdAndPermissionId(String roleId, String permissionId);
+     boolean existsByRoleIdAndPermissionId(Long roleId, Long permissionId);
 
-     List<PermissionRole> findAllByRoleId(String id);
+     List<PermissionRole> findAllByRoleId(Long id);
 }

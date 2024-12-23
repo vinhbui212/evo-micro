@@ -3,6 +3,8 @@ package org.example.thuan_security.controller;
 import com.evo.common.client.storage.StorageClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.thuan_security.model.Users;
+import org.example.thuan_security.repository.UserRepository;
 import org.example.thuan_security.response.ApiResponse2;
 import org.example.thuan_security.response.StorageResponse;
 import org.example.thuan_security.service.FileUploadService;
@@ -26,11 +28,14 @@ public class FileUploadController {
 
     private final FileUploadService fileUploadService;
     private final StorageClient storageClient;
+    private final UserRepository userRepository;
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadFile(@RequestBody MultipartFile file, @RequestParam("email") String email) {
         try {
             String imageUrl = fileUploadService.uploadFile(file, email);
+            Users users=userRepository.findByEmail(email);
+            storageClient.uploadToStorageSingle(file,true,"1", users.getId());
             return ResponseEntity.ok("File uploaded and updated successfully: " + imageUrl);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lỗi: " + e.getMessage());

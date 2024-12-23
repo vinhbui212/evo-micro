@@ -59,8 +59,8 @@ public class RoleService {
                     .orElseThrow(() -> new RuntimeException("Permission not found"));
 
             PermissionRole permissionRole = new PermissionRole();
-            permissionRole.setRoleId(String.valueOf(role.getId()));
-            permissionRole.setPermissionId(String.valueOf(permission.getId()));
+            permissionRole.setRoleId((role.getId()));
+            permissionRole.setPermissionId((permission.getId()));
 
             System.out.println("Saving PermissionRole: " + permissionRole);
 

@@ -15,6 +15,7 @@ import org.example.thuan_security.repository.UserRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -41,13 +42,13 @@ public class AuthorityServiceImpl implements AuthorityService {
         Users users=userRepository.findByEmail(username);
 
         Set<String> roles = users.getRoles();
-        String role =null;// Tên claim tùy thuộc vào cách bạn đặt trong JWT
+        String role =null;
         if (roles != null && !roles.isEmpty()) {
             role = roles.iterator().next(); // Lấy phần tử đầu tiên trong Set
         }
         Roles userRole=roleRepository.findByName(role);
         log.info(userRole.getId().toString());
-        List<PermissionRole> rolePermissions = permissionRoleRepository.findAllByRoleId(String.valueOf(userRole.getId()));
+        List<PermissionRole> rolePermissions = permissionRoleRepository.findAllByRoleId((userRole.getId()));
         log.info(rolePermissions.toString());
         log.info("---USER GRANT---" + mapRolesToAuthorities(userRole, rolePermissions).toString());
 
@@ -72,20 +73,29 @@ public class AuthorityServiceImpl implements AuthorityService {
         // Lấy tên role từ đối tượng Roles
         String roleAuthorities = roles.getName();
 
-        // Lấy Permission từ permissionRepository
-        Permissions permissions = permissionsRepository.findById(Long.valueOf(rolePermissions.get(3).getPermissionId())).orElse(null);
-        log.info(permissions.toString());
-        // Kiểm tra nếu không tìm thấy permission
-        if (permissions == null) {
-            throw new IllegalArgumentException("Permission not found for ID: " + rolePermissions.get(0).getId());
+        // Lấy danh sách ID từ rolePermissions
+        List<Long> permissionIds = rolePermissions.stream()
+                .map(PermissionRole::getPermissionId)
+                .collect(Collectors.toList());
+
+        // Lấy danh sách Permission từ repository
+        List<Permissions> permissions = permissionsRepository.findAllById(permissionIds);
+        log.info("Permissions: " + permissions);
+
+        // Kiểm tra nếu không tìm thấy permission nào
+        if (permissions == null || permissions.isEmpty()) {
+            throw new IllegalArgumentException("Permissions not found for IDs: " + permissionIds);
         }
 
-        // Tạo chuỗi permission
-        String permission = permissions.getResource() + "." + permissions.getScope();
-        log.info(permission);
-        // Sử dụng Stream.concat để kết hợp các quyền và role
-        return Stream.concat(Stream.of(roleAuthorities), Stream.of(permission)) // Chuyển các chuỗi thành Stream
-                .collect(Collectors.toList()); // Chuyển kết quả thành List
+        // Tạo danh sách permission từ resource và scope
+        List<String> permissionStrings = permissions.stream()
+                .map(p -> p.getResource() + "." + p.getScope())
+                .collect(Collectors.toList());
+        log.info("Permission Strings: " + permissionStrings);
+
+        // Kết hợp roleAuthorities và danh sách permissionStrings
+        return Stream.concat(Stream.of(roleAuthorities), permissionStrings.stream())
+                .collect(Collectors.toList());
     }
 
 
